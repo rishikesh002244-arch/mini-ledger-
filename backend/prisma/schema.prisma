@@ -1,0 +1,47 @@
+// MiniLedger data model
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  phone           String    @unique
+  name            String?
+  // Mock OTP state (never expose these fields through the API)
+  otpHash         String?   @map("otp_hash")
+  otpExpiresAt    DateTime? @map("otp_expires_at")
+  otpAttempts     Int       @default(0) @map("otp_attempts")
+  otpLastSentAt   DateTime? @map("otp_last_sent_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  loans Loan[]
+
+  @@map("users")
+}
+
+model Loan {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  friendName      String    @map("friend_name")
+  amount          Decimal   @db.Decimal(12, 2)
+  dueDate         DateTime  @map("due_date")
+  receiptImageUrl String?   @map("receipt_image_url")
+  isRepaid        Boolean   @default(false) @map("is_repaid")
+  repaidAt        DateTime? @map("repaid_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRepaid])
+  @@index([userId, dueDate])
+  @@map("loans")
+}

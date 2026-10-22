@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+backend/dist/
+frontend/.expo/
+frontend/web-build/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Runtime uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Temporary local PostgreSQL used for verification
+backend/.pg/
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
