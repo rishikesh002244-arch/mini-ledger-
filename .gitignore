@@ -1,7 +1,8 @@
 # Dependencies
 node_modules/
 **/node_modules/
-
+.freebuff/
+.codebenders/
 # Build output
 backend/dist/
 frontend/.expo/
